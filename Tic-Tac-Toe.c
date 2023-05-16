@@ -1,6 +1,6 @@
-﻿#include <stdio.h>	// Standard input/output operations
-#include <stdlib.h>	// Memory allocation, conversion, and other utilities
-#include <math.h>	// Mathematical functions
+#include <stdio.h>	
+#include <stdlib.h>	
+#include <math.h>	
 #include <string.h>
 #include <ctype.h>
 #include <stdbool.h>
