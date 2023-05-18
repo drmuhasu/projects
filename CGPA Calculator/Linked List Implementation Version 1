@@ -1,0 +1,100 @@
+#include <stdlib.h> 
+#include <stdbool.h>
+#include <stdio.h>
+
+
+struct grades {
+  char* courseName;
+  int courseGrade;
+  struct grades *nextCourse;
+};
+
+struct cgpa {
+  char* name;
+  int id;
+  struct grades *courses;
+  struct cgpa* next;
+};
+
+struct cgpa* insertStudent(struct cgpa* list, char * studentName, int studentID){
+  struct cgpa* newStudent = malloc(sizeof(struct cgpa));
+  newStudent->name = studentName;
+  newStudent->id = studentID;
+  newStudent->courses = NULL;
+  newStudent->next = NULL;
+
+  if (list == NULL) {
+      return newStudent;
+  }
+
+  struct cgpa* tail = list;
+  while (tail->next != NULL) {
+      tail = tail->next;
+  }
+  tail->next = newStudent;
+
+  return list;
+}
+
+struct cgpa* insertCourse(struct cgpa* list, int studentID, char* name, int grade){
+  struct cgpa* rightStudent = list;
+  while(rightStudent != NULL){
+    if(rightStudent->id == studentID){
+      break;
+      }
+    rightStudent = rightStudent->next;
+  }
+  
+  struct grades* newCourse = malloc(sizeof(struct grades));
+  newCourse->courseName = name;
+  newCourse->courseGrade = grade;
+  newCourse->nextCourse = NULL;
+  
+  if (rightStudent->courses == NULL) {
+    rightStudent->courses = newCourse;
+  }else{
+  struct grades* tail = rightStudent->courses;
+    while(tail->nextCourse != NULL){
+      tail = tail->nextCourse;
+    }
+    tail->nextCourse = newCourse;
+  }
+  
+  return list;
+}
+
+struct cgpa* createList(){
+  struct cgpa* newList = malloc(sizeof(struct cgpa));
+  newList->name = NULL;
+  newList->id = 0;
+  newList->courses =  NULL;
+  newList->next = NULL;
+  return newList;
+}
+
+void freeList(struct cgpa* listName){
+  struct cgpa* current = listName;
+  while (current != NULL) {
+    struct cgpa* temp = current;
+    current = current->next;
+    free(temp->courses);
+    free(temp);
+  }
+}
+
+void main() {
+ 
+  struct cgpa* StudentGrades = createList();
+
+  StudentGrades = insertStudent(StudentGrades, "John", 1);
+  StudentGrades = insertStudent(StudentGrades, "Emma", 2);
+  StudentGrades = insertStudent(StudentGrades, "Michael", 3);
+
+  StudentGrades = insertCourse(StudentGrades, 1, "Math", 85);
+  StudentGrades = insertCourse(StudentGrades, 1, "Science", 92);
+  StudentGrades = insertCourse(StudentGrades, 2, "English", 78);
+  StudentGrades = insertCourse(StudentGrades, 3, "History", 88);
+  StudentGrades = insertCourse(StudentGrades, 3, "Geography", 90);
+
+  freeList(StudentGrades);
+}
