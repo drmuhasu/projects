@@ -1,100 +1,180 @@
-#include <stdlib.h> 
+#include <stdlib.h>
 #include <stdbool.h>
 #include <stdio.h>
 
-
 struct grades {
-  char* courseName;
-  int courseGrade;
-  struct grades *nextCourse;
+	char *courseName;
+	int courseGrade;
+	float courseCredit;
+	struct grades *nextCourse;
 };
 
 struct cgpa {
-  char* name;
-  int id;
-  struct grades *courses;
-  struct cgpa* next;
+	char *name;
+	int id;
+	struct grades *courses;
+	float gpa;
+	struct cgpa *next;
 };
 
-struct cgpa* insertStudent(struct cgpa* list, char * studentName, int studentID){
-  struct cgpa* newStudent = malloc(sizeof(struct cgpa));
-  newStudent->name = studentName;
-  newStudent->id = studentID;
-  newStudent->courses = NULL;
-  newStudent->next = NULL;
+struct cgpa *updategpa(struct cgpa *list, int studentID)
+{
+	struct cgpa *rightStudent = list;
+	while (rightStudent != NULL)
+	{
+		if (rightStudent->id == studentID)
+		{
+			break;
+		}
+		rightStudent = rightStudent->next;
+	}
 
-  if (list == NULL) {
-      return newStudent;
-  }
+	struct grades *studentCourse = rightStudent->courses;
+	float studentGPA = 0.0;
+	float totalCredits = 0;	
 
-  struct cgpa* tail = list;
-  while (tail->next != NULL) {
-      tail = tail->next;
-  }
-  tail->next = newStudent;
+	while (studentCourse != NULL)
+	{
+		totalCredits += studentCourse->courseCredit;
 
-  return list;
+		if (studentCourse->courseGrade >= 80 && studentCourse->courseGrade <= 100)
+		{
+			studentGPA += 11 / studentCourse->courseCredit;
+		}
+		else if (studentCourse->courseGrade >= 70 && studentCourse->courseGrade < 80)
+		{
+			studentGPA += 8 / studentCourse->courseCredit;
+		}
+		else if (studentCourse->courseGrade >= 60 && studentCourse->courseGrade < 70)
+		{
+			studentGPA += 5 / studentCourse->courseCredit;
+		}
+		else if (studentCourse->courseGrade >= 50 && studentCourse->courseGrade < 60)
+		{
+			studentGPA += 2 / studentCourse->courseCredit;
+		}
+		else
+		{
+			studentGPA += 0 / studentCourse->courseCredit;
+		}
+		studentCourse = studentCourse->nextCourse;
+	}
+
+	studentGPA = studentGPA / totalCredits;
+	rightStudent->gpa = studentGPA;
+
+	return list;
 }
 
-struct cgpa* insertCourse(struct cgpa* list, int studentID, char* name, int grade){
-  struct cgpa* rightStudent = list;
-  while(rightStudent != NULL){
-    if(rightStudent->id == studentID){
-      break;
-      }
-    rightStudent = rightStudent->next;
-  }
-  
-  struct grades* newCourse = malloc(sizeof(struct grades));
-  newCourse->courseName = name;
-  newCourse->courseGrade = grade;
-  newCourse->nextCourse = NULL;
-  
-  if (rightStudent->courses == NULL) {
-    rightStudent->courses = newCourse;
-  }else{
-  struct grades* tail = rightStudent->courses;
-    while(tail->nextCourse != NULL){
-      tail = tail->nextCourse;
+struct cgpa *insertStudent(struct cgpa *list, char *studentName, int studentID)
+{
+	struct cgpa *newStudent = malloc(sizeof(struct cgpa));
+	newStudent->name = studentName;
+	newStudent->id = studentID;
+	newStudent->courses = NULL;
+	newStudent->next = NULL;
+
+	if (list == NULL)
+	{
+		return newStudent;
+	}
+
+	struct cgpa *tail = list;
+	while (tail->next != NULL)
+	{
+		tail = tail->next;
+	}
+	tail->next = newStudent;
+
+	return list;
+}
+
+struct cgpa *insertCourse(struct cgpa *list, int studentID, char *name, int grade, float credit)
+{
+	struct cgpa *rightStudent = list;
+	while (rightStudent != NULL)
+	{
+		if (rightStudent->id == studentID)
+		{
+			break;
+		}
+		rightStudent = rightStudent->next;
+	}
+
+	struct grades *newCourse = malloc(sizeof(struct grades));
+	newCourse->courseName = name;
+	newCourse->courseGrade = grade;
+	newCourse->courseCredit = credit;
+	newCourse->nextCourse = NULL;
+
+	if (rightStudent->courses == NULL)
+	{
+		rightStudent->courses = newCourse;
+	}
+	else
+	{
+		struct grades *tail = rightStudent->courses;
+		while (tail->nextCourse != NULL)
+		{
+			tail = tail->nextCourse;
+		}
+		tail->nextCourse = newCourse;
+	}
+    list = updategpa(list, studentID);
+    return list;
+}
+
+
+
+struct cgpa *createList()
+{
+	struct cgpa *newList = malloc(sizeof(struct cgpa));
+	newList->name = NULL;
+	newList->id = 0;
+	newList->gpa = 0.0;
+	newList->courses = NULL;
+	newList->next = NULL;
+	return newList;
+}
+
+void freeList(struct cgpa *listName)
+{
+	struct cgpa *current = listName;
+	while (current != NULL)
+	{
+		struct cgpa *temp = current;
+		current = current->next;
+		free(temp->courses);
+		free(temp);
+	}
+}
+
+int main()
+{
+    struct cgpa* StudentGrades = createList();
+
+    StudentGrades = insertStudent(StudentGrades, "John", 1);
+    StudentGrades = insertStudent(StudentGrades, "Emma", 2);
+    StudentGrades = insertStudent(StudentGrades, "Michael", 3);
+
+    StudentGrades = insertCourse(StudentGrades, 1, "Math", 85, 0.5);
+    StudentGrades = insertCourse(StudentGrades, 1, "Science", 92, 1.0);
+    StudentGrades = insertCourse(StudentGrades, 2, "English", 78, 1);
+    StudentGrades = insertCourse(StudentGrades, 3, "History", 88, 0.25);
+    StudentGrades = insertCourse(StudentGrades, 3, "Geography", 90, 0.5);
+
+    struct cgpa* currentStudent = StudentGrades->next;
+    while (currentStudent != NULL)
+    {
+        struct grades* currentCourse = currentStudent->courses;
+        while (currentCourse != NULL)
+        {
+            currentCourse = currentCourse->nextCourse;
+        }
+        printf("Name: %s, ID: %d, GPA: %.2f\n", currentStudent->name, currentStudent->id, currentStudent->gpa);
+        currentStudent = currentStudent->next;
     }
-    tail->nextCourse = newCourse;
-  }
-  
-  return list;
-}
 
-struct cgpa* createList(){
-  struct cgpa* newList = malloc(sizeof(struct cgpa));
-  newList->name = NULL;
-  newList->id = 0;
-  newList->courses =  NULL;
-  newList->next = NULL;
-  return newList;
-}
-
-void freeList(struct cgpa* listName){
-  struct cgpa* current = listName;
-  while (current != NULL) {
-    struct cgpa* temp = current;
-    current = current->next;
-    free(temp->courses);
-    free(temp);
-  }
-}
-
-void main() {
- 
-  struct cgpa* StudentGrades = createList();
-
-  StudentGrades = insertStudent(StudentGrades, "John", 1);
-  StudentGrades = insertStudent(StudentGrades, "Emma", 2);
-  StudentGrades = insertStudent(StudentGrades, "Michael", 3);
-
-  StudentGrades = insertCourse(StudentGrades, 1, "Math", 85);
-  StudentGrades = insertCourse(StudentGrades, 1, "Science", 92);
-  StudentGrades = insertCourse(StudentGrades, 2, "English", 78);
-  StudentGrades = insertCourse(StudentGrades, 3, "History", 88);
-  StudentGrades = insertCourse(StudentGrades, 3, "Geography", 90);
-
-  freeList(StudentGrades);
+    freeList(StudentGrades);
+    return 0;
 }
