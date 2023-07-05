@@ -1,0 +1,5 @@
+main.c: This file contains the main function where the user interface for the student management system is implemented. It includes the necessary header file "student_management.h" and defines the handleChoice function, which handles user choices based on a switch statement. The main function repeatedly prompts the user for input and calls the handleChoice function to perform the corresponding actions.
+
+student_management.c: This file implements the functions declared in the "student_management.h" header file. It includes the necessary header files, defines the struct student and grades, and implements various functions for managing students and their courses. These functions include inserting and deleting students, adding and removing courses, updating course grades, searching for students, printing student details, and freeing memory.
+
+student_management.h: This header file declares the functions and structs used in the student management system. It includes the struct definitions for student and grades and declares the function prototypes for the functions implemented in the student_management.c file.
