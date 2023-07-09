@@ -1,17 +1,24 @@
-﻿struct grades {
-	char *courseName;
-	int courseGrade;
-	float courseCredit;
-	struct grades *nextCourse;
+/**
+ * Structure to represent course grades.
+ */
+struct grades {
+	char *courseName;            /**< Name of the course */
+	int courseGrade;             /**< Grade obtained in the course */
+	float courseCredit;          /**< Credit hours of the course */
+	struct grades *nextCourse;   /**< Pointer to the next course */
 };
 
+/**
+ * Structure to represent a student.
+ */
 struct student {
-	char *name;
-	int id;
-	struct grades *courses;
-	float gpa;
-	struct student *next;
+	char *name;                  /**< Name of the student */
+	int id;                      /**< Student ID */
+	struct grades *courses;      /**< Pointer to the courses of the student */
+	float gpa;                   /**< GPA of the student */
+	struct student *next;        /**< Pointer to the next student */
 };
+
 /**
  * Frees the memory allocated for a course.
  *
