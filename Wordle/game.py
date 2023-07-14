@@ -66,5 +66,3 @@ def play_wordle():
 
     print(f"Sorry, you couldn't guess the word. The word was {target_word}.")
 
-
-play_wordle()
