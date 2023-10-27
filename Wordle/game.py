@@ -22,8 +22,9 @@ WORDS = [
     'CLOVE', 'SPICE', 'FROST', 'SLEET', 'FLUTE',
     'TULIP', 'BLITZ', 'SMIRK', 'SKIRT', 'TRICK'
 ]
+
 WORD_LENGTH = 5
-MAX_GUESSES = 10
+MAX_GUESSES = 4
 
 
 def generate_random_word():
@@ -66,3 +67,5 @@ def play_wordle():
 
     print(f"Sorry, you couldn't guess the word. The word was {target_word}.")
 
+
+play_wordle()
