@@ -1,5 +1,6 @@
 from pw_logic import *
 
+
 def validate():
     try:
         password_length = int(entry.get())
@@ -9,20 +10,21 @@ def validate():
             include_special_chars = special_chars_var.get()
 
             if include_numbers or include_letters or include_special_chars:
-                range_and_validation_label.config(text="")
-                range_and_validation_label.grid(row=0, column=3, sticky="e")
+                invalid_validation.config(text="")
+                invalid_validation.grid(row=0, column=2)
                 display_password(password_length, include_letters, include_numbers, include_special_chars, main_win)
             else:
-                range_and_validation_label.config(text="Invalid Value")
-                range_and_validation_label.grid(row=0, column=3, sticky="e", fg="red")
+                invalid_validation.config(text="Invalid Value")
+                invalid_validation.grid(row=0, column=2)
         else:
-            range_and_validation_label.config(text="Invalid Value")
-            range_and_validation_label.grid(row=0, column=2, sticky="e", fg="red")
+            invalid_validation.config(text="Invalid Value")
+            invalid_validation.grid(row=0, column=2)
     except ValueError:
-        range_and_validation_label.config(text="Invalid value", fg="red")
-        range_and_validation_label.grid(row=0, column=2, sticky="e")
+        invalid_validation.config(text="Invalid value")
+        invalid_validation.grid(row=0, column=2)
 
 
+# Creating a Main Window
 main_win = tk.Tk()
 main_win.title("Password Manager")
 width = 350
@@ -33,43 +35,42 @@ x = (screen_width/2) - (width/2)
 y = (screen_height/2) - (height/2)
 main_win.geometry("%dx%d+%d+%d" % (width, height, x, y))
 
-# Frame for password length
-length_frame = tk.Frame(main_win)
-length_frame.grid(row=0, column=0)
 
-pw_length_label = tk.Label(length_frame, text="Password Length:")
-pw_length_label.grid(row=0, column=0, sticky="w")
+# Password length label and entry
+pw_length_label = tk.Label(main_win, text="Password Length:")
+pw_length_label.grid(row=0, column=0, padx=10, sticky="e")
+entry = tk.Entry(main_win, width=2)
+entry.grid(row=0, column=1, padx=5, sticky="w")
+range_label = tk.Label(main_win, text="between 6-25")
+range_label.grid(row=0, column=1, padx=25, sticky="e")
 
-entry = tk.Entry(length_frame, width=2)
-entry.grid(row=0, column=1, sticky="w")
+# Checkbox label and checkboxes
+checkbox_label = tk.Label(main_win, text="Include:")
+checkbox_label.grid(row=2, column=0, padx=10, sticky="w")
 
-range_and_validation_label = tk.Label(length_frame, text="between 6-25")
-range_and_validation_label.grid(row=0, column=2, sticky="e")
-
-# Frame for checkboxes
-checkbox_frame = tk.Frame(main_win)
-checkbox_frame.grid(row=1, column=0)
-
-checkbox_label = tk.Label(checkbox_frame, text="Include:")
-checkbox_label.grid(row=0, column=1, sticky="w")
-
+# Checkbox to include letters
 letters_var = tk.BooleanVar(value=True)
-letters_checkbox = tk.Checkbutton(checkbox_frame, text="letters", variable=letters_var)
+letters_checkbox = tk.Checkbutton(main_win, text="letters", variable=letters_var)
 letters_checkbox.grid(row=2, column=1, sticky="w")
 
+# Checkbox to include numbers
 numbers_var = tk.BooleanVar(value=True)
-numbers_checkbox = tk.Checkbutton(checkbox_frame, text="Numbers", variable=numbers_var)
+numbers_checkbox = tk.Checkbutton(main_win, text="Numbers", variable=numbers_var)
 numbers_checkbox.grid(row=2, column=2, sticky="w")
 
+# Checkbox to include special characters
 special_chars_var = tk.BooleanVar(value=True)
-special_chars_checkbox = tk.Checkbutton(checkbox_frame, text="Special", variable=special_chars_var)
+special_chars_checkbox = tk.Checkbutton(main_win, text="Special", variable=special_chars_var)
 special_chars_checkbox.grid(row=2, column=3, sticky="w", columnspan=2)
 
-# Frame for the Generate button
-generate_frame = tk.Frame(main_win)
-generate_frame.grid(row=2, column=0, columnspan=2)
 
-generate_button = tk.Button(generate_frame, text="Generate", command=validate)
-generate_button.grid(row=0, column=0, padx=10)
+# Button to generate password
+generate_button = tk.Button(main_win, text="Generate", command=validate)
+generate_button.grid(row=5, column=1, padx=10)
 
+# Label for length validation message
+invalid_validation = tk.Label(main_win, text="", fg="red")
+invalid_validation.grid(row=0, column=1, sticky="e")
+
+# Run the main loop
 main_win.mainloop()
